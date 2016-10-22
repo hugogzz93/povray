@@ -97,15 +97,8 @@ isosurface {
 }
 
 #declare LOTW_Terrain_Grass=object { LOTW_Terrain_Trace }
-
-
-
-// --- part written by terrain_text.inc ---
-
 #declare Gamma=2.2;
-
 #include "cm_landscape02.inc"
-
 #declare Pigm_Terrain=
   pigment {
     slope z
@@ -253,84 +246,9 @@ sphere {
 }
 
 
-
-// --- part written by atmosphere.inc ---
-
-
-fog {
-  fog_type 2
-  fog_alt 8.846
-  fog_offset 8.846
-  color rgb <0.545, 0.660, 1.0>*1.3
-  distance 1042.400
-  turbulence 0.1
-  up z
-}
-
-
-
-// --- part written by water.inc ---
-
-#declare M_Water_1 =
-  material {
-    texture {
-      pigment { rgbt <0.2, 0.24, 0.21, 0.97> }
-      finish {
-        diffuse 0.22
-        ambient 0
-        reflection {
-          0.0, 1.0
-          fresnel on
-        }
-        conserve_energy
-        specular 0.4
-        roughness 0.0035
-      }
-    }
-    interior {
-      ior 1.33
-      media {
-        absorption <1.0, 0.92, 0.9>*1.6
-      }
-    }
-  }
-
-#declare fn_Water2=
-  function(x,y) {
-    f_noise3d(x*60.0/1.77914,y*60.0/1.77914, 0)
-  }
-
-isosurface { 
-  function { 
-    z-fn_Water2(x, y)*0.00180
-  }
-  max_gradient 1.2
-  accuracy 0.001
-  open 
-  contained_by { box { <-500, -50, -1>, <500, 500, 0.00180+0.00001> } }
-  translate 0.807*z
-  material {
-    M_Water_1
-  }
-  hollow on
-}
-
 object {
   LOTW_Terrain
   texture {
     LOTW_Tex_Terrain
-  }
-}
-
-plane {
-  z, 0
-  texture {
-    pigment {
-      color rgb 0.3
-    }
-    finish {
-      diffuse 0.7
-      ambient 0.0
-    }
   }
 }
