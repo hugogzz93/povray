@@ -2,21 +2,19 @@
 #include "cm_landscape02.inc"
 #include "stars.inc"
 
-// Series de montañas basada en fractales para dar simular algo similar a una cordillera
+// Función del fractal para la montaña
 #declare fn_Form=
   function {
     f_ridged_mf(x/3.762, y/3.762, 79.248, 0.1, 3.1, 7, 0.7, 0.8, 2)
   }
 
-#declare fn_Terrain=
-  function {
+// Generación de la cordillera
+#declare LOTW_Terrain=
+isosurface {
+  function { 
     z
     - fn_Form(x, y, 0)*2.039
   }
-
-#declare LOTW_Terrain=
-isosurface {
-  function { fn_Terrain(x, y, z) }
   contained_by {
     box { <-350, -20, -0.1>, <350, 750, 3.5> }
   }
