@@ -1,100 +1,110 @@
+global_settings{ assumed_gamma 1.0 } 
+#default{ finish{ ambient 0.1 diffuse 0.9 }}
+//--------------------------------------------------------------------------
+#include "colors.inc"
+#include "textures.inc"
+#include "glass.inc"
+#include "metals.inc"
+#include "golds.inc"
+#include "stones.inc"
+#include "woods.inc"
+#include "shapes.inc"
+#include "shapes2.inc"
 #include "functions.inc"
-#include "cm_landscape02.inc"
-#include "stars.inc"
+#include "math.inc"
+#include "transforms.inc"
+#include "realskies.inc"
 
-// Función del fractal para la montaña
-#declare fn_Form=
-  function {
-    f_ridged_mf(x/3.762, y/3.762, 79.248, 0.1, 3.1, 7, 0.7, 0.8, 2)
+// ###################################
+// Luz
+// ###################################
+#declare Light_Number = 1 ;
+#switch ( Light_Number )
+#case (1) // Dia
+  #declare Light_Pos = <0.920, 0.331, 0.209>*9500       ;
+  #declare Light_Color = color rgb <5.625, 5.713, 5.979>;
+  sky_sphere {
+    sky_realsky_01
   }
-
-// Generación de la cordillera
-#declare LOTW_Terrain=
-isosurface {
-  function { 
-    z
-    - fn_Form(x, y, 0)*2.039
-  }
-  contained_by {
-    box { <-350, -20, -0.1>, <350, 750, 3.5> }
-  }
-  accuracy 0.0005
-  max_gradient 5
-}
-
-// Pigmentación tipo montaña usando colores encontrados en una librería basados en fotos de la naturaleza
-// para usarse con pigment maps y dar cambios de colores no tan drásticos en la textura
-#declare Pigm_Terrain=
-  pigment {
-    slope z
-    pigment_map {
-      [0.125
-        granite
-        color_map { CM_landscape02_4 }
-        warp { turbulence 0.6 omega 0.6 }
-        translate 0.000
-        scale 0.3
-      ]
-      [0.375
-        granite
-        color_map { CM_landscape02_3 }
-        warp { turbulence 0.6 omega 0.6 }
-        translate 5.000
-        scale 0.3
-      ]
-      [0.625
-        granite
-        color_map { CM_landscape02_2 }
-        warp { turbulence 0.6 omega 0.6 }
-        translate 10.000
-        scale 0.3
-      ]
-      [0.875
-        granite
-        color_map { CM_landscape02_1 }
-        warp { turbulence 0.6 omega 0.6 }
-        translate 15.000
-        scale 0.3
-      ]
-    }
-  }
-
-
-// Textura el terreno 
-#declare LOTW_Tex_Terrain=
-  texture {
-    pigment { Pigm_Terrain }
-    finish {
-      ambient 0
-      diffuse 0.65
-    }
-  }
-
-// Camara viendo hacia el origen desde un poco arriba para que se alcancen a ver algunas sombras
-camera {
-  location <0, 8, 0.5>
-  sky z
-  look_at <0.000, 5.5, 1.450>
-  angle 45
-}
-
-// Simulación de luz de la luna
-light_source {
- <0.920, 0.331, 0.209>*9500
- color rgb <.8, .8, .8>
-} 
-
+  
+#break
+#else // Noche
+  #declare Light_Pos = <0.920, 0.331, 0.209>*9500 ;
+  #declare Light_Color = rgb <5.625, 5.713, 5.979>;
 // Cielo estrellado
 sphere{ <0,0,0>, 1
         texture{ Starfield1 scale 3 rotate 90
                }
         scale 10000
       }
+#break
+#end 
 
-// Creación de la montaña
-object {
-  LOTW_Terrain
-  texture {
-    LOTW_Tex_Terrain
-  }
+light_source {
+ Light_Pos
+ Light_Color
 }
+
+// ###################################
+// Camara
+// ###################################
+#declare Camera_Position = < 0,3, 4> ;  // diagonal view
+#declare Camera_Look_At  = < 0, 3,0> ;
+#declare Camera_Angle    =  42 ;
+
+
+camera{
+  location Camera_Position
+  right    x*image_width/image_height
+  angle    Camera_Angle
+  look_at  Camera_Look_At
+}
+
+
+
+
+// ----------------------------------
+#declare Pigment_1 = 
+pigment{ crackle turbulence 0.35 scale 0.45 
+         color_map{
+          [0.00 color rgb<1,1,1>*0]
+          [0.08 color rgb<1,1,1>*0]
+          [0.40 color rgb<1,0.55,0>]
+          [1.00 color rgb<1,1,0.8>]
+         } // end of color_map
+} // end of pigment -----------------
+
+#declare fn_Pigment_1 = 
+function {pigment{ Pigment_1} }
+
+
+isosurface { 
+  function{
+    f_rounded_box(x,y,z,
+                  0.15, // radius of curvature
+                  10, 1.0, 10  // scale<x,y,z>
+                 ) // 
+     - fn_Pigment_1(x,y,z).gray*0.25
+  } // end function
+  threshold 0
+  contained_by {box {<-10,-2,-10>,<10,2,10>}}
+  max_gradient 5
+  accuracy 0.0001
+  //evaluate 1,20,0.99
+
+  texture{ pigment{ Pigment_1 }
+           normal { crackle 0.5 scale 0.045}
+           finish { phong 1}
+       } // end texture 
+  translate < 1,0,2>
+}
+
+plane {
+    y,0
+    texture { 
+        Water
+        scale 10
+    }
+    rotate <10,0,0>
+}    
+
