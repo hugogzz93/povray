@@ -96,7 +96,8 @@ isosurface {
            normal { crackle 0.5 scale 0.045}
            finish { phong 1}
        } // end texture 
-  translate < 1,0,2>
+  translate < 1,0,-6>
+  rotate <-5,0,0>
 }
 
 plane {
@@ -105,6 +106,5 @@ plane {
         Water
         scale 10
     }
-    rotate <10,0,0>
 }    
 
