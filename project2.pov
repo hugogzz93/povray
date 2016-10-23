@@ -1,6 +1,7 @@
 global_settings{ assumed_gamma 1.0 } 
 #default{ finish{ ambient 0.1 diffuse 0.9 }}
 //--------------------------------------------------------------------------
+
 #include "./include/colors.inc"
 #include "./include/textures.inc"
 #include "./include/glass.inc"
@@ -15,8 +16,12 @@ global_settings{ assumed_gamma 1.0 }
 #include "./include/transforms.inc"
 #include "./include/realskies.inc"
 
+//palmera
+#include "./include/palm.inc"
+
+
 // ###################################
-// Luz
+// Light
 // ###################################
 #declare Light_Number = 1 ;
 #switch ( Light_Number )
@@ -46,7 +51,7 @@ light_source {
 }
 
 // ###################################
-// Camara
+// Camera
 // ###################################
 #declare Camera_Position = < 0,3, 4> ;  // diagonal view
 #declare Camera_Look_At  = < 0, 3,0> ;
@@ -55,14 +60,26 @@ light_source {
 
 camera{
   location Camera_Position
-  right    x*image_width/image_height
   angle    Camera_Angle
   look_at  Camera_Look_At
 }
 
 
 
+// ###################################
+// Ocean
+// ###################################
+plane {
+    y,0
+    texture { 
+        Water
+        scale 10
+    }
+}    
 
+// ###################################
+// Sand
+// ###################################
 // ----------------------------------
 #declare Pigment_1 = 
 pigment{ crackle turbulence 0.35 scale 0.45 
@@ -77,6 +94,9 @@ pigment{ crackle turbulence 0.35 scale 0.45
 #declare fn_Pigment_1 = 
 function {pigment{ Pigment_1} }
 
+// ###################################
+// Beachfront
+// ###################################
 
 isosurface { 
   function{
@@ -95,16 +115,150 @@ isosurface {
   texture{ pigment{ Pigment_1 }
            normal { crackle 0.5 scale 0.045}
            finish { phong 1}
-       } // end texture 
+       }
   translate < 1,0,-6>
   rotate <-5,0,0>
 }
 
-plane {
-    y,0
-    texture { 
-        Water
-        scale 10
+
+
+
+
+// ###################################
+// Teth
+// ###################################
+ #declare teth1    = <1.00, 0.00>;
+  #declare teth2 = <1.75, 1.00>;
+  #declare teth3 = <2.50, 2.00>;
+  #declare teth4  = <2.00, 3.00>;
+  #declare teth5   = <1.50, 4.00>;
+
+  #declare teth = lathe {
+    linear_spline
+    5,
+    teth1,
+    teth2,
+    teth3,
+    teth4,
+    teth5
+    pigment { White }
+    finish { ambient 1 }
+  }
+
+
+// ###################################
+// Far beach
+// ###################################
+  #declare HEIGHT = palm_13_height * 1.3;
+  #declare WIDTH = HEIGHT*400/600;
+
+  #declare Red_Point    = <2.5, 7.0>;
+  #declare Orange_Point = <2.0,6.0>;
+  #declare Green_Point  = <1.2,4.6>;
+  #declare Blue_Point   = <1.1,3.2>;
+  #declare Green_Point2 = <0.9,1.8>;
+  #declare Orange_Point2= <0.3,0.6>;
+  #declare Red_Point2   = <0,0>;
+
+  #declare far_beach_front = object {
+        lathe {
+          bezier_spline
+          8,
+          Red_Point, Orange_Point, Green_Point, Blue_Point
+          Blue_Point, Green_Point2, Orange_Point2, Red_Point2
+          texture{ Sandalwood }
+          finish { ambient 1 }
+        }
+      }
+
+
+  #declare palm = union {
+      object { 
+          palm_13_stems
+          pigment { color rgb <144/255, 104/255, 78/255> }
+      }
+      object { 
+          palm_13_leaves
+          texture { 
+              pigment { color rgb <0, 1, 0> }
+              finish { ambient 0.15 diffuse 0.8 }
+          }
+      } 
     }
-}    
+
+  #declare tree_line1 = union {
+    #local i = 0;
+    #while (i < 4)
+        object { 
+            palm
+            rotate 45*y*i
+            translate <WIDTH*0.3*i,0,WIDTH>
+            pigment {color rgb 0.9} 
+        }
+        #local i = i + 1;
+    #end 
+  }
+
+  #declare tree_line2 = union {
+    #local i = 0;
+    #while (i < 4)
+        object { 
+            palm
+            rotate -25*y*i
+            translate <WIDTH*0.5*i,0,WIDTH>
+        }
+        #local i = i + 1;
+    #end 
+  }
+
+  #declare tree_line3 = union {
+    #local i = 0;
+    #while (i < 4)
+        object { 
+            palm
+            rotate -55*y*i
+            translate <WIDTH*0.15*i,0,WIDTH>
+        }
+        #local i = i + 1;
+    #end 
+  }
+
+  #declare palms = object {
+    union {
+      object {
+        tree_line1
+      }
+      object {
+        tree_line2
+        translate <3,0,-2>
+      }
+      object {
+        tree_line3
+        translate <5,0,-6>
+      }
+    }
+    scale <0,0.65,0>
+  }
+
+
+
+  object {
+    union {
+        object {far_beach_front
+          scale <0.5,0,0>
+        }
+        object {
+          object {
+            palms
+            rotate <0,0,95>
+            scale 0.25
+            translate <0,0,-2>
+          }
+          translate <0,2.5,0>
+        }
+      }
+    rotate <0,0,-90>
+    scale 3
+    translate <20,1,-100>
+  }
 
