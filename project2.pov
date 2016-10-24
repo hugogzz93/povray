@@ -1,4 +1,4 @@
-global_settings{ assumed_gamma 1.0 } 
+global_settings{ assumed_gamma 1.0 }
 #default{ finish{ ambient 0.1 diffuse 0.9 }}
 //--------------------------------------------------------------------------
 
@@ -16,22 +16,27 @@ global_settings{ assumed_gamma 1.0 }
 #include "./include/transforms.inc"
 #include "./include/realskies.inc"
 
-//palmera
+
 #include "./include/palm.inc"
+#include "./include/boat.inc"
+#include "./include/Birds.inc"
+
+
 
 
 // ###################################
 // Light
 // ###################################
-#declare Light_Number = 1 ;
+#declare Light_Number = 1;
 #switch ( Light_Number )
 #case (1) // Dia
-  #declare Light_Pos = <0.920, 0.331, 0.209>*9500       ;
+//  #declare Light_Pos = <0.920, 0.331, 0.209>*9500       ;
+  #declare Light_Pos = <0.920, 0.331, -0.909>*9500;
   #declare Light_Color = color rgb <5.625, 5.713, 5.979>;
   sky_sphere {
     sky_realsky_01
   }
-  
+
 #break
 #else // Noche
   #declare Light_Pos = <0.920, 0.331, 0.209>*9500 ;
@@ -43,7 +48,7 @@ sphere{ <0,0,0>, 1
         scale 10000
       }
 #break
-#end 
+#end
 
 light_source {
  Light_Pos
@@ -55,7 +60,7 @@ light_source {
 // ###################################
 #declare Camera_Position = < 0,3, 4> ;  // diagonal view
 #declare Camera_Look_At  = < 0, 3,0> ;
-#declare Camera_Angle    =  42 ;
+#declare Camera_Angle    =  42 ; 
 
 
 camera{
@@ -71,18 +76,23 @@ camera{
 // ###################################
 plane {
     y,0
-    texture { 
-        Water
+    texture {
+        Polished_Chrome
         scale 10
+        normal{ crackle 0.15
+                scale 0.75
+                turbulence 0.3
+                translate<-1,0,5>
+              }
     }
-}    
+}
 
 // ###################################
 // Sand
 // ###################################
 // ----------------------------------
-#declare Pigment_1 = 
-pigment{ crackle turbulence 0.35 scale 0.45 
+#declare Pigment_1 =
+pigment{ crackle turbulence 0.35 scale 0.45
          color_map{
           [0.00 color rgb<1,1,1>*0]
           [0.08 color rgb<1,1,1>*0]
@@ -91,19 +101,19 @@ pigment{ crackle turbulence 0.35 scale 0.45
          } // end of color_map
 } // end of pigment -----------------
 
-#declare fn_Pigment_1 = 
+#declare fn_Pigment_1 =
 function {pigment{ Pigment_1} }
 
 // ###################################
 // Beachfront
 // ###################################
 
-isosurface { 
+isosurface {
   function{
     f_rounded_box(x,y,z,
                   0.15, // radius of curvature
                   10, 1.0, 10  // scale<x,y,z>
-                 ) // 
+                 ) //
      - fn_Pigment_1(x,y,z).gray*0.25
   } // end function
   threshold 0
@@ -120,30 +130,52 @@ isosurface {
   rotate <-5,0,0>
 }
 
+// ###################################
+// Birds 
+// ###################################
+object { Bird (0.223)
+  translate <-90,60,-350>
+}
 
+object { Bird (0.223)
+  translate <-100,58,-348>
+}
 
+object { Bird (0.223)
+  translate <-95,53,-352>
+}
+
+// ###################################
+// Boat
+// ###################################
+
+object{ boat
+  scale 2
+  rotate y*30 
+  translate<50,3.5,-270>
+} 
 
 
 // ###################################
 // Teth
 // ###################################
- #declare teth1    = <1.00, 0.00>;
-  #declare teth2 = <1.75, 1.00>;
-  #declare teth3 = <2.50, 2.00>;
-  #declare teth4  = <2.00, 3.00>;
-  #declare teth5   = <1.50, 4.00>;
+ // #declare teth1    = <1.00, 0.00>;
+ //  #declare teth2 = <1.75, 1.00>;
+ //  #declare teth3 = <2.50, 2.00>;
+ //  #declare teth4  = <2.00, 3.00>;
+ //  #declare teth5   = <1.50, 4.00>;
 
-  #declare teth = lathe {
-    linear_spline
-    5,
-    teth1,
-    teth2,
-    teth3,
-    teth4,
-    teth5
-    pigment { White }
-    finish { ambient 1 }
-  }
+ //  #declare teth = lathe {
+ //    linear_spline
+ //    5,
+ //    teth1,
+ //    teth2,
+ //    teth3,
+ //    teth4,
+ //    teth5
+ //    pigment { White }
+ //    finish { ambient 1 }
+ //  }
 
 
 // ###################################
@@ -173,54 +205,54 @@ isosurface {
 
 
   #declare palm = union {
-      object { 
+      object {
           palm_13_stems
           pigment { color rgb <144/255, 104/255, 78/255> }
       }
-      object { 
+      object {
           palm_13_leaves
-          texture { 
+          texture {
               pigment { color rgb <0, 1, 0> }
               finish { ambient 0.15 diffuse 0.8 }
           }
-      } 
+      }
     }
 
   #declare tree_line1 = union {
     #local i = 0;
     #while (i < 4)
-        object { 
+        object {
             palm
             rotate 45*y*i
             translate <WIDTH*0.3*i,0,WIDTH>
-            pigment {color rgb 0.9} 
+            pigment {color rgb 0.9}
         }
         #local i = i + 1;
-    #end 
+    #end
   }
 
   #declare tree_line2 = union {
     #local i = 0;
     #while (i < 4)
-        object { 
+        object {
             palm
             rotate -25*y*i
             translate <WIDTH*0.5*i,0,WIDTH>
         }
         #local i = i + 1;
-    #end 
+    #end
   }
 
   #declare tree_line3 = union {
     #local i = 0;
     #while (i < 4)
-        object { 
+        object {
             palm
             rotate -55*y*i
             translate <WIDTH*0.15*i,0,WIDTH>
         }
         #local i = i + 1;
-    #end 
+    #end
   }
 
   #declare palms = object {
@@ -239,6 +271,7 @@ isosurface {
     }
     scale <0,0.65,0>
   }
+
 
 
 
