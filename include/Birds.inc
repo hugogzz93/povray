@@ -3,67 +3,67 @@
 
 
 
- 
+
 // ---------------- Wings ------------------------
 
 #declare Wing = blob {
   threshold 0.56
   cylinder {<-1,0,0>,<0,0,0>,1,1
     scale <1,0.188,0.375>}
-    
+
   cylinder {<-0.875,0,0>,<0,0,0>,1,1
     scale <1,0.188,0.375>
     rotate y*-4
     translate -z*0.375}
-     
+
   cylinder {<-0.75,0,0>,<0,0,0>,1,1
     scale <1,0.188,0.375>
     rotate y*-8
     translate -z*0.75}
-    
+
   cylinder {<-0.625,0,0>,<0,0,0>,1,1
     scale <1,0.188,0.375>
     rotate y*-12
     translate -z*1.125}
-    
+
   texture {
     pigment { bozo
       color_map {
-        [0 rgb <0.7,0.63,0.58>] 
-        [0.5 rgb <0.4,0.4,0.4>]
-        [1 rgb <1,0.8,0.6>]
+        [0 rgb <0.7,0.53,0.58>]
+        [0.5 rgb <0.3,0.4,0.4>]
+        [1 rgb <1,0.87,0.6>]
         }
       turbulence 0.3
       }
     scale <1,0.1,0.1>
     rotate y*-30
     }
-  }  // end Wing  
-  
+  }  // end Wing
+
 #declare Wingtip = blob {
   threshold 0.56
   cylinder {<-0.5,0,0>,<0,0,0>,1,1
     scale <1,0.188,0.375>}
-    
+
   cylinder {<-0.375,0,0>,<0,0,0>,1,1
     scale <1,0.188,0.375>
     rotate y*-15
     translate <-0.125,0,-0.375>}
-     
+
   cylinder {<-0.375,0,0>,<0,0,0>,1,1
     scale <1,0.188,0.312>
     rotate y*-30
     translate <-0.25,0,-0.75>}
-    
+
   cylinder {<-0.375,0,0>,<0,0,0>,1,1
     scale <1,0.188,0.25>
     rotate y*-50
     translate <-0.375,0,-1.125>}
-    
+
   texture {
     pigment { bozo
       color_map {
-        [0 rgb <0.7,0.63,0.58>] 
+        [0 rgb <0.7,0.63,0.58>]
         [0.5 rgb <0.4,0.4,0.4>]
         [1 rgb <1,0.8,0.6>]
         }
@@ -73,8 +73,8 @@
     rotate y*-30
     }
   }  // end Wingtip
-   
-  
+
+
 #macro Bird (F)
 
 #declare Flap = sin(F*2*pi);
@@ -89,7 +89,7 @@ union {
     object { Wing }
     rotate <60*Flap,-7,10>
     translate <0.5,0.438,-0.625>
-    } 
+    }
   union {  // left wing
     object { Wingtip
       rotate <15-35*Tipflap,-24,0>
@@ -143,7 +143,7 @@ union {
   texture {
     pigment { bozo
       color_map {
-        [0 rgb <0.7,0.63,0.58>] 
+        [0 rgb <0.7,0.63,0.58>]
         [0.5 rgb <0.4,0.4,0.4>]
         [1 rgb <1,0.8,0.6>]
         }
@@ -158,4 +158,4 @@ union {
 
 object { Bird (clock)
   rotate y*55
-  }     
+  }
