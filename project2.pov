@@ -1,21 +1,24 @@
 global_settings{ assumed_gamma 1.0 } 
 #default{ finish{ ambient 0.1 diffuse 0.9 }}
 //--------------------------------------------------------------------------
-#include "colors.inc"
-#include "textures.inc"
-#include "glass.inc"
-#include "metals.inc"
-#include "golds.inc"
-#include "stones.inc"
-#include "woods.inc"
-#include "shapes.inc"
-#include "shapes2.inc"
-#include "functions.inc"
-#include "math.inc"
-#include "transforms.inc"
-#include "realskies.inc"
+
+#include "./include/colors.inc"
+#include "./include/textures.inc"
+#include "./include/glass.inc"
+#include "./include/metals.inc"
+#include "./include/golds.inc"
+#include "./include/stones.inc"
+#include "./include/woods.inc"
+#include "./include/shapes.inc"
+#include "./include/shapes2.inc"
+#include "./include/functions.inc"
+#include "./include/math.inc"
+#include "./include/transforms.inc"
+#include "./include/realskies.inc"
+
 //palmera
-#include "palm.inc"
+#include "./include/palm.inc"
+
 
 // ###################################
 // Light
