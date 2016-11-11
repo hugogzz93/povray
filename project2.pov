@@ -56,12 +56,21 @@ light_source {
 }
 
 // ###################################
-// Camera
+// Cameras
 // ###################################
-#declare Camera_Position = < 0,3, 4> ;  // diagonal view
-#declare Camera_Look_At  = < 0, 3,0> ;
-#declare Camera_Angle    =  42 ; 
-
+#declare Camera_Option = 1;
+#switch (Camera_Option)
+#case (1)
+    #declare Camera_Position = < 0,3, 4> ;  // diagonal view
+    #declare Camera_Look_At  = < 0, 3,0> ;
+    #declare Camera_Angle    =  42 ;
+#break
+#else
+    #declare Camera_Position = < 0,3, -100> ;
+    #declare Camera_Look_At  = < 20, 3,-100> ;
+    #declare Camera_Angle    =  0 ;
+#break
+#end
 
 camera{
   location Camera_Position
@@ -118,7 +127,7 @@ isosurface {
   } // end function
   threshold 0
   contained_by {box {<-10,-2,-10>,<10,2,10>}}
-  max_gradient 5
+  max_gradient 2
   accuracy 0.0001
   //evaluate 1,20,0.99
 
@@ -131,7 +140,7 @@ isosurface {
 }
 
 // ###################################
-// Birds 
+// Birds
 // ###################################
 object { Bird (0.223)
   translate <-90,60,-350>
@@ -150,10 +159,10 @@ object { Bird (0.223)
 // ###################################
 
 object{ boat
-  scale 2
-  rotate y*30 
-  translate<50,3.5,-270>
-} 
+  scale 1
+  rotate y*30
+  translate<19,1.6,-110>
+}
 
 
 // ###################################
